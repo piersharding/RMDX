@@ -1,0 +1,15 @@
+Package: RMDX
+Type: Package
+Title: RMDX is an XML/A OLAP MDX interface
+Version: 1.0
+Date: 2015-01-29
+Author: Piers Harding <piers@ompka.net>
+Maintainer: Piers Harding <piers@ompka.net>
+Description: XML/A OLAP interface for MDX, specifically Mondrian, but should support others eg: SAP HANA
+License: GPL-3
+SystemRequirements: XML, yaml and RCurl
+Depends: R (>= 2.12.0), methods, yaml, XML, RCurl
+LazyLoad: yes
+URL: http://github.com/piersharding/RMDX
+BugReports: http://github.com/piersharding/RMDX/issues
+BuildVignettes: no

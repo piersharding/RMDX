@@ -1,0 +1,7 @@
+.Rproj.user
+*.sh
+!install_dependencies.sh
+*.yml
+.R*
+run_tests.R
+RMDX*.gz

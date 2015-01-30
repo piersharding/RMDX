@@ -1,0 +1,23 @@
+exportPattern("^[[:alpha:]]+")
+
+import(methods)
+
+export(
+       RMDX,
+       info,
+       mdxquery,
+       olapsources,
+       olapcatalogs,
+       olapcubes,
+       cubedimensions,
+       cubemeasures
+)
+
+exportClasses(
+              RMDXConnector
+)
+
+S3method(info, "RMDXConnector")
+S3method(print, "RMDXConnector")
+S3method(str, "RMDXConnector")
+
