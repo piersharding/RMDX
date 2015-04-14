@@ -98,6 +98,7 @@ RMDXConnector <- function(url=character(), userid=character(), password=characte
 
 
 # utility for HTTP and XML handling
+# curl -v --insecure --user 'Admin:password' -H "Content-Type: text/xml" -d '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Header /><SOAP-ENV:Body><Discover xmlns="urn:schemas-microsoft-com:xml-analysis"><RequestType>DISCOVER_DATASOURCES</RequestType><Restrictions><RestrictionList/></Restrictions><Properties><PropertyList><Format>Tabular</Format></PropertyList></Properties></Discover></SOAP-ENV:Body></SOAP-ENV:Envelope>' "http://localhost:8080/pentaho/Xmla"
 call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TRUE, ...){
 
             extra <- list(...)
@@ -107,24 +108,23 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
             if (length(extra) > 0) {
                 url <- paste(c(url, extra), collapse="&")
             }
-
             soapheader <-
 '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 <SOAP-ENV:Header />
 <SOAP-ENV:Body>';
-
-
             soaptail <- '</SOAP-ENV:Body>
 </SOAP-ENV:Envelope>';
-
-            request <- paste0(soapheader, request, soaptail)
+            request <- paste0(soapheader, request, soaptail);
             myheader=c(Connection = "close",
                        'Content-Type' = "text/xml",
-                       'Content-length' = nchar(request))
-            xml <- paste(getURL(url = URLencode(url),
-                                postfields=request,
-                                httpheader=myheader,
-                                verbose=FALSE, ssl.verifypeer = FALSE), collapse="");
+                       'Content-length' = nchar(request));
+            xml <- paste(RCurl::getURL(url=URLencode(url),
+                                       postfields=request,
+                                       httpheader=myheader,
+                                       verbose=FALSE,
+                                       ssl.verifypeer = FALSE,
+                                       userpwd=paste0(conn@userid, ':', conn@password),
+                                       httpauth=1L), collapse="");
             if (nchar(xml) == 0) {
                 return(data.frame())
             }
@@ -212,7 +212,6 @@ setMethod("mdxquery", "RMDXConnector",
 
             # adjust names
             names(results) <- sub("\\.\\[MEMBER_CAPTION\\]", '', names(results));
-
             return(results)
          },
          valueClass = "data.frame"

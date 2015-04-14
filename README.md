@@ -9,6 +9,8 @@ Copyright (C) Piers Harding 2015 - and beyond, All rights reserved
 
 Welcome to the RMDX R module.  This module is an XML/A OLAP interface for MDX, specifically Mondrian, but should support others eg: SAP HANA.
 
+This has been specifically tested with Pentaho BiServer 5.x
+
 
 ### Prerequisites:
 Please insure that YAML, RCurl, and XML are installed:
@@ -27,6 +29,7 @@ OR:
 ### Examples:
 
  See the files in the tests/ directory.
+ NOTE!!! Make sure Xmla is enabled for SampleData in the data source manager in the Pentaho BiServer
 
 ### Documentation:
  help(RMDX)

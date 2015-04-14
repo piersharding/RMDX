@@ -13,6 +13,6 @@ test.mdxquery <- function()
         NON EMPTY {Hierarchize({{[Measures].[Actual], [Measures].[Budget], [Measures].[Variance]}})} ON COLUMNS,
         NON EMPTY CrossJoin([Department].[Department].Members, [Positions].[Positions].Members) ON ROWS
         FROM [Quadrant Analysis]')
-
+    print(r)
 }
 

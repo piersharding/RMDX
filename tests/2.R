@@ -9,17 +9,18 @@ test.introspection <- function()
     checkTrue(class(conn) == 'RMDXConnector')
 
     # list the data sources for a server
-    olapsources(conn)
+    print(olapsources(conn))
 
     # list the catalogs for a data source
-    olapcatalogs(conn, 'Pentaho')
+    print(olapcatalogs(conn, 'Pentaho Mondrian'))
 
     # list the cubes for a catalog within a data source
-    olapcubes(conn, 'Pentaho', 'SampleData')
+    # NOTE!!! Make sure Xmla is enabled for SampleData in the data source manager
+    print(olapcubes(conn, 'Pentaho Mondrian', 'SampleData'))
 
     # list the dimensions and measures for a cube
-    cubedimensions(conn, 'Pentaho', 'SampleData', 'Quadrant Analysis')
-    cubemeasures(conn, 'Pentaho', 'SampleData', 'Quadrant Analysis')
+    print(cubedimensions(conn, 'Pentaho Mondrian', 'SampleData', 'Quadrant Analysis'))
+    print(cubemeasures(conn, 'Pentaho Mondrian', 'SampleData', 'Quadrant Analysis'))
 
 }
 
