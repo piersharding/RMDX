@@ -29,7 +29,7 @@ OR:
 ### Examples:
 
  See the files in the tests/ directory.
- NOTE!!! Make sure Xmla is enabled for SampleData in the data source manager in the Pentaho BiServer
+ NOTE!!! Make sure Xmla is enabled for SampleData in the data source manager in the Pentaho BiServer because this is not on by default and the SampleData catalog is not visible without it.
 
 ### Documentation:
  help(RMDX)
