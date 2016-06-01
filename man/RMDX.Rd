@@ -18,6 +18,19 @@
      \item{userid} - XML/A service user name
      \item{password} - user password
   }
+  
+  There maybe some problems with SSL negotiation - especially if you are using
+  self-signed certs.  The following Curl options may help - especially
+  downgrading SSL to v3 (this must also be made available on the server):
+  
+  options(RCurlOptions = list(ssl.verifypeer = FALSE,
+                            sslversion=3,
+                            verbose = TRUE,
+                            cainfo = "/etc/ssl/certs/some-certificate.pem",
+                            followlocation = TRUE,
+                            timeout = 100,
+                            useragent = "myApp in R"))
+
 }
 \usage{
 RMDX(...)

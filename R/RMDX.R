@@ -50,7 +50,12 @@ RMDX <- function (...)
 
     # if unamed parameters are passed
     if (!exists('args$url')) {
-        names(args) <- c('url', 'userid', 'password')
+        if (length(args) >= 3) {
+            names(args) <- c('url', 'userid', 'password')
+        }
+        else {
+            stop("must call with 'url', 'userid', and 'password'")
+        }
     }
 
     # ensure we have the parameters we need
@@ -60,6 +65,9 @@ RMDX <- function (...)
 
     # Create connector object and hand back
     res <- RMDXConnector(url=args$url, userid=args$userid, password=args$password)
+    if (exists("debug", where=args)) {
+        res@debug = args$debug
+    }
     return(res)
 }
 
@@ -84,7 +92,8 @@ setClass("RMDXConnector",
     representation=representation(
         url="character",
         userid="character",
-        password="character"),
+        password="character",
+        debug="logical"),
     validity=function(object) {
         if (length(object@url) == 0)
             "'url', 'userid' and 'password' must be supplied"
@@ -117,15 +126,15 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
             request <- paste0(soapheader, request, soaptail);
             myheader=c(Connection = "close",
                        'Content-Type' = "text/xml",
-                       'Content-length' = nchar(request));
+                       'Content-length' =  nchar(request, type = "bytes"));
             xml <- paste(RCurl::getURL(url=URLencode(url),
                                        postfields=request,
                                        httpheader=myheader,
-                                       verbose=FALSE,
+                                       verbose=conn@debug,
                                        ssl.verifypeer = FALSE,
                                        userpwd=paste0(conn@userid, ':', conn@password),
                                        httpauth=1L), collapse="");
-            if (nchar(xml) == 0) {
+            if (nchar(xml, type = "bytes") == 0) {
                 return(data.frame())
             }
 
