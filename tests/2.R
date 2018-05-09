@@ -1,7 +1,10 @@
 test.introspection <- function()
 {
 
-    conn <- RMDX("conn.yml")
+    conn <- RMDX(url='http://localhost:8080/pentaho/Xmla',
+                 userid='Admin',
+                 password='password',
+                 curlopts=list(httpauth=1L))
     i <- info(conn)
     checkEquals(i$url, "http://localhost:8080/pentaho/Xmla")
     checkEquals(i$userid, "Admin")

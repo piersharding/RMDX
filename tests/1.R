@@ -1,6 +1,6 @@
 test.connecting <- function()
 {
-    conn <- RMDX(connentaho='http://localhost:8080/pentaho/Xmla', userid='Admin', password='password')
+    conn <- RMDX(url='http://localhost:8080/pentaho/Xmla', userid='Admin', password='password', curlopts=list(a=1,b=2,c='A_B'))
     print(conn)
     i <- info(conn)
     checkEquals(i$url, "http://localhost:8080/pentaho/Xmla")

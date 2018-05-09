@@ -49,7 +49,7 @@ RMDX <- function (...)
     }
 
     # if unamed parameters are passed
-    if (!exists('args$url')) {
+    if (!is.element("url", names(args))) {
         if (length(args) >= 3) {
             names(args) <- c('url', 'userid', 'password')
         }
@@ -62,9 +62,14 @@ RMDX <- function (...)
     if (!exists("url", where=args) || !exists("userid", where=args) || !exists("password", where=args)) {
         stop("must call with 'url', 'userid', and 'password'")
     }
-
+    curlopts <- list()
+    # pass curlopts if supplied
+    if (exists("curlopts", where=args)) {
+      curlopts <- args$curlopts
+    }
+    
     # Create connector object and hand back
-    res <- RMDXConnector(url=args$url, userid=args$userid, password=args$password)
+    res <- RMDXConnector(url=args$url, userid=args$userid, password=args$password, curlopts=curlopts)
     if (exists("debug", where=args)) {
         res@debug = args$debug
     }
@@ -84,7 +89,8 @@ print.RMDXConnector <- function(x, ...) {
 }
 
 info.RMDXConnector <- function(x, ...) {
-    return(list(url=x@url, userid=x@userid, password='*****'))
+    curlopts <- paste(mapply(function(key,value) { paste(key, value, sep="=") }, key=names(x@curlopts), value=x@curlopts), collapse=", ")
+    return(list(url=x@url, userid=x@userid, password='*****', curlopts=curlopts))
 }
 
 # define connector class
@@ -93,7 +99,8 @@ setClass("RMDXConnector",
         url="character",
         userid="character",
         password="character",
-        debug="logical"),
+        debug="logical",
+        curlopts="list"),
     validity=function(object) {
         if (length(object@url) == 0)
             "'url', 'userid' and 'password' must be supplied"
@@ -101,8 +108,8 @@ setClass("RMDXConnector",
     })
 
 # connector object constructor function
-RMDXConnector <- function(url=character(), userid=character(), password=character(), ...) {
-    return(new("RMDXConnector", url=url, userid=userid, password=password, ...))
+RMDXConnector <- function(url=character(), userid=character(), password=character(), curlopts=list(), ...) {
+    return(new("RMDXConnector", url=url, userid=userid, password=password, curlopts=curlopts, ...))
 }
 
 
@@ -124,6 +131,10 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
             soaptail <- '</SOAP-ENV:Body>
 </SOAP-ENV:Envelope>';
             request <- paste0(soapheader, request, soaptail);
+            httpauth <- 1L
+            if (is.element("httpauth", names(conn@curlopts))) {
+                httpauth <- conn@curlopts$httpauth
+            }
             myheader=c(Connection = "close",
                        'Content-Type' = "text/xml",
                        'Content-length' =  nchar(request, type = "bytes"));
@@ -133,7 +144,7 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
                                        verbose=conn@debug,
                                        ssl.verifypeer = FALSE,
                                        userpwd=paste0(conn@userid, ':', conn@password),
-                                       httpauth=1L), collapse="");
+                                       httpauth=httpauth), collapse="");
             if (nchar(xml, type = "bytes") == 0) {
                 return(data.frame())
             }

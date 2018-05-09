@@ -17,6 +17,9 @@
      \item{url} - the base URL for the XML/A service
      \item{userid} - XML/A service user name
      \item{password} - user password
+     \item{debug} - TRUE - turn on debug
+     \item{curlopts} - list() of options to pass to curl - currently
+     only support httpauth (for values see: https://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html, and https://stackoverflow.com/questions/26255964/r-negotiate-authentication-with-rcurl-or-httr)
   }
   
   There maybe some problems with SSL negotiation - especially if you are using
