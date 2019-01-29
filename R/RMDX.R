@@ -144,13 +144,14 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
                                        verbose=conn@debug,
                                        ssl.verifypeer = FALSE,
                                        userpwd=paste0(conn@userid, ':', conn@password),
-                                       httpauth=httpauth), collapse="");
+                                       httpauth=httpauth,
+                                       .encoding = 'UTF-8'), collapse="");
             if (nchar(xml, type = "bytes") == 0) {
                 return(data.frame())
             }
 
             # xml <- xmlParseString(xml);
-            xml  <- xmlTreeParse(xml, asText = TRUE, useInternalNodes=TRUE)
+            xml  <- xmlTreeParse(xml, asText = TRUE, useInternalNodes=TRUE, encoding = 'UTF-8')
             return(xml);
 }
 
