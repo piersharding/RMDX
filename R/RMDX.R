@@ -67,7 +67,7 @@ RMDX <- function (...)
     if (exists("curlopts", where=args)) {
       curlopts <- args$curlopts
     }
-    
+
     # Create connector object and hand back
     res <- RMDXConnector(url=args$url, userid=args$userid, password=args$password, curlopts=curlopts)
     if (exists("debug", where=args)) {
@@ -120,9 +120,9 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
             extra <- list(...)
             extra <- mapply(function(key,value) { paste(paste('param', key, sep=""), value, sep="=") }, key=names(extra), value=extra)
 
-            url <-paste(conn@url, '?', 'userid=', conn@userid, '&password=', conn@password, sep="")
+            url <-conn@url
             if (length(extra) > 0) {
-                url <- paste(c(url, extra), collapse="&")
+                url <- paste(conn@url, '?', paste(extra, collapse="&"), sep="")
             }
             soapheader <-
 '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
