@@ -149,6 +149,13 @@ call_olap <- function(conn, request, withFactors=FALSE,toNumeric=TRUE, toDate=TR
             if (nchar(xml, type = "bytes") == 0) {
                 return(data.frame())
             }
+            
+            # Check for error messages in the response and stop if present
+            if(grepl("<faultcode>", xml)) {
+              xml <- xmlToList(xml)
+              fault <- xml$Body$Fault
+              stop(paste0(fault$faultcode, ': ', fault$faultstring))
+            }
 
             # xml <- xmlParseString(xml);
             xml  <- xmlTreeParse(xml, asText = TRUE, useInternalNodes=TRUE, encoding = 'UTF-8')
@@ -199,7 +206,7 @@ setMethod("mdxquery", "RMDXConnector",
 </Properties>
 </Execute>');
             xml <- call_olap(conn, request);
-
+            
             # convert the query results to a data.frame
             results <- xmlToDataFrame(getNodeSet(xml,
                       "//SOAP-ENV:Envelope/SOAP-ENV:Body/cxmla:ExecuteResponse/cxmla:return/x:root/x:row",
@@ -208,7 +215,12 @@ setMethod("mdxquery", "RMDXConnector",
                         xsi="http://www.w3.org/2001/XMLSchema-instance",
                         xsd="http://www.w3.org/2001/XMLSchema", x='urn:schemas-microsoft-com:xml-analysis:rowset')),
                         stringsAsFactors = withFactors);
-
+            
+            # If results are empty, return empty frame
+            if(length(results) == 0) {
+              return(data.frame())
+            }
+              
             # set the column names
             nodes <- getNodeSet(xml,
                       "//SOAP-ENV:Envelope/SOAP-ENV:Body/cxmla:ExecuteResponse/cxmla:return/x:root/xsd:schema/xsd:complexType/xsd:sequence/xsd:element",
