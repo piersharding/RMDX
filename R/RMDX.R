@@ -47,11 +47,10 @@ RMDX <- function (...)
         for (x in names(config)) { newargs[[x]] <- as.character(config[[x]]); }
         return(RMDX(newargs))
     }
-
     # if unamed parameters are passed
     if (!is.element("url", names(args))) {
         if (length(args) >= 3) {
-            names(args) <- c('url', 'userid', 'password')
+            names(args)[1:3] <- c('url', 'userid', 'password')
         }
         else {
             stop("must call with 'url', 'userid', and 'password'")
