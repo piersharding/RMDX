@@ -60,7 +60,10 @@ RMDX(...)
   \code{olapcubes(conn, datasource, catalog)} - list the cubes for a catalog within a data source
 
   \code{cubedimensions(conn, datasource, catalog, cube)} - list the dimensions for a cube
+  \code{cubelevels(conn, datasource, catalog, cube)} - list the levels for a cube
   \code{cubemeasures(conn, datasource, catalog, cube)} - list the measures for a cube
+  
+  \code{cubeexplore(conn, datasource, catalog, schema, cube)} - list alternative schema information for a cube
 
   \code{mdxquery(conn, datasource, catalog, query)} - execute an MDX query and get a data.frame back
 
