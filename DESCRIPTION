@@ -1,7 +1,7 @@
 Package: RMDX
 Type: Package
 Title: RMDX is an XML/A OLAP MDX interface
-Version: 1.1
+Version: 1.2
 Date: 2015-04-15
 Author: Piers Harding <piers@ompka.net>
 Maintainer: Piers Harding <piers@ompka.net>

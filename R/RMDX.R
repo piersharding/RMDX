@@ -274,8 +274,8 @@ setMethod("olapsources", "RMDXConnector",
 setGeneric("olapcatalogs", function(conn, datasource) standardGeneric("olapcatalogs"));
 
 setMethod("olapcatalogs", "RMDXConnector",
-        def = function(conn, datasource){
-
+          def = function(conn, datasource){
+            
             request <- paste0('<Discover xmlns="urn:schemas-microsoft-com:xml-analysis">
 <RequestType>DBSCHEMA_CATALOGS</RequestType>
 <Restrictions>
@@ -291,17 +291,17 @@ setMethod("olapcatalogs", "RMDXConnector",
             xml <- call_olap(conn, request);
             catalogs <- getResults(xml);
             return(catalogs)
-         },
-         valueClass = "data.frame"
-       )
+          },
+          valueClass = "data.frame"
+)
 
 
 
 setGeneric("olapcubes", function(conn, datasource, catalog) standardGeneric("olapcubes"));
 
 setMethod("olapcubes", "RMDXConnector",
-        def = function(conn, datasource, catalog){
-
+          def = function(conn, datasource, catalog){
+            
             request <- paste0('<Discover xmlns="urn:schemas-microsoft-com:xml-analysis">
 <RequestType>MDSCHEMA_CUBES</RequestType>
 <Restrictions>
@@ -318,22 +318,22 @@ setMethod("olapcubes", "RMDXConnector",
             xml <- call_olap(conn, request);
             cubes <- getResults(xml);
             return(cubes)
-         },
-         valueClass = "data.frame"
-       )
+          },
+          valueClass = "data.frame"
+)
 
 
-setGeneric("cubedimensions", function(conn, datasource, catalog, cube) standardGeneric("cubedimensions"));
+setGeneric("cubeexplore", function(conn, datasource, catalog, schema, cube = NULL) standardGeneric("cubeexplore"));
 
-setMethod("cubedimensions", "RMDXConnector",
-        def = function(conn, datasource, catalog, cube){
-
+setMethod("cubeexplore", "RMDXConnector",
+          def = function(conn, datasource, catalog, schema, cube = NULL){
+            
             request <- paste0('<Discover xmlns="urn:schemas-microsoft-com:xml-analysis">
-<RequestType>MDSCHEMA_DIMENSIONS</RequestType>
+<RequestType>MDSCHEMA_', toupper(schema), '</RequestType>
 <Restrictions>
-<RestrictionList>
-<CUBE_NAME>', cube, '</CUBE_NAME>
-</RestrictionList>
+<RestrictionList>',
+                              ifelse(is.null(cube), '', paste0('<CUBE_NAME>', cube, '</CUBE_NAME>')),
+                              '</RestrictionList>
 </Restrictions>
 <Properties>
 <PropertyList>
@@ -345,44 +345,43 @@ setMethod("cubedimensions", "RMDXConnector",
 </Discover>
 ');
             xml <- call_olap(conn, request);
-            dimensions <- getResults(xml);
-            return(dimensions)
-         },
-         valueClass = "data.frame"
-       )
+            result <- getResults(xml);
+            return(result)
+          },
+          valueClass = "data.frame"
+)
 
-setGeneric("cubemeasures", function(conn, datasource, catalog, cube) standardGeneric("cubemeasures"));
+setGeneric("cubedimensions", function(conn, datasource, catalog, cube = NULL) standardGeneric("cubedimensions"));
+
+setMethod("cubedimensions", "RMDXConnector",
+          def = function(conn, datasource, catalog, cube = NULL){
+            cubeexplore(conn = conn, datasource = datasource, catalog = catalog, schema = "DIMENSIONS", cube = cube)
+          },
+          valueClass = "data.frame"
+)
+
+setGeneric("cubemeasures", function(conn, datasource, catalog, cube = NULL) standardGeneric("cubemeasures"));
 
 setMethod("cubemeasures", "RMDXConnector",
-        def = function(conn, datasource, catalog, cube){
+          def = function(conn, datasource, catalog, cube = NULL){
+            cubeexplore(conn = conn, datasource = datasource, catalog = catalog, schema = "MEASURES", cube = cube)
+          },
+          valueClass = "data.frame"
+)
 
-            request <- paste0('<Discover xmlns="urn:schemas-microsoft-com:xml-analysis">
-<RequestType>MDSCHEMA_MEASURES</RequestType>
-<Restrictions>
-<RestrictionList>
-<CUBE_NAME>', cube, '</CUBE_NAME>
-</RestrictionList>
-</Restrictions>
-<Properties>
-<PropertyList>
-<DataSourceInfo>', datasource, '</DataSourceInfo>
-<Catalog>', catalog, '</Catalog>
-<Format>Tabular</Format>
-</PropertyList>
-</Properties>
-</Discover>');
-            xml <- call_olap(conn, request);
-            measures <- getResults(xml);
-            return(measures)
-         },
-         valueClass = "data.frame"
-       )
+setGeneric("cubelevels", function(conn, datasource, catalog, cube = NULL) standardGeneric("cubelevels"));
 
+setMethod("cubelevels", "RMDXConnector",
+          def = function(conn, datasource, catalog, cube = NULL){
+            cubeexplore(conn = conn, datasource = datasource, catalog = catalog, schema = "LEVELS", cube = cube)
+          },
+          valueClass = "data.frame"
+)
 
 setGeneric("info", function(x, ...) standardGeneric("info"));
 setMethod("info", "RMDXConnector",
-         def = function(x, ...){
+          def = function(x, ...){
             return(info.RMDXConnector(x))
-         },
-         valueClass = "data.frame"
-       )
+          },
+          valueClass = "data.frame"
+)

@@ -10,7 +10,9 @@ export(
        olapcatalogs,
        olapcubes,
        cubedimensions,
-       cubemeasures
+       cubelevels,
+       cubemeasures,
+       cubeexplore
 )
 
 exportClasses(
