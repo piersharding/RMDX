@@ -113,8 +113,9 @@ olapcatalogs(conn, 'Pentaho')
 # list the cubes for a catalog within a data source
 olapcubes(conn, 'Pentaho', 'SampleData')
 
-# list the dimensions and measures for a cube
+# list the dimensions, levels and measures for a cube
 cubedimensions(conn, 'Pentaho', 'SampleData', 'Quadrant Analysis')
+cubelevels(conn, 'Pentaho', 'SampleData', 'Quadrant Analysis')
 cubemeasures(conn, 'Pentaho', 'SampleData', 'Quadrant Analysis')
 
 # execute an MDX query and get a data.frame back
